@@ -62,7 +62,10 @@ function Login() {
       try {
         const { email, password } = values;
         setLoading(true);
-        const user = await login({ email, password });
+        const user = await login({
+          email: email.toLocaleLowerCase().trim(),
+          password: password.toLocaleLowerCase().trim(),
+        });
         dispatchSetUser(user.toJSON());
 
         router.push("/");
@@ -116,7 +119,10 @@ function Login() {
             <small className="text-red-500 mb-4">{errors.password}</small>
           )}
 
-          <Link className="text-center hover:underline" href={"/registro"}>
+          <Link
+            className="cursor-pointer text-center underline"
+            href={"/registro"}
+          >
             registrar un nuevo usuario
           </Link>
 

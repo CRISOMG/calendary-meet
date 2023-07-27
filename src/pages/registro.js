@@ -35,7 +35,10 @@ function Registro() {
       try {
         const { email, password } = values;
         setLoading(true);
-        const user = await register({ email, password });
+        const user = await register({
+          email: email.toLocaleLowerCase().trim(),
+          password: password.toLocaleLowerCase().trim(),
+        });
         enqueueSnackbar("se te envio un correo con el link de confirmacion.", {
           variant: "success",
         });
@@ -90,7 +93,10 @@ function Registro() {
             <small className="text-red-500 mb-4">{errors.password}</small>
           )}
 
-          <Link className="text-center hover:underline" href={"/login"}>
+          <Link
+            className="cursor-pointer text-center underline"
+            href={"/login"}
+          >
             login
           </Link>
 

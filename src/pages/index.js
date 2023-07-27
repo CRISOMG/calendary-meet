@@ -27,6 +27,7 @@ import {
 
 import {
   Add,
+  AdsClick,
   Close,
   Delete,
   Edit,
@@ -85,6 +86,8 @@ function Home() {
 
   const handleNotificationsFlow = async () => {
     try {
+      setLoading("handleNotificationsFlow");
+
       const sw = await onServiceWorker();
       const sus = await swHandleSuscription(sw);
       const { updated } = await swUpdateSuscription(sus);
@@ -98,13 +101,18 @@ function Home() {
           variant: "warning",
         });
       }
+      setLoading(false);
     } catch (error) {
       enqueueSnackbar(error.message, { variant: "error" });
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleActiveNotifications = async () => {
     try {
+      setLoading("handleNotificationsFlow");
+
       const user = await retrieveUserCustomData();
       if (!user?.notifications?.suscription) {
         await handleNotificationsFlow();
@@ -115,6 +123,8 @@ function Home() {
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
   useEffect(() => {
@@ -175,7 +185,7 @@ function Home() {
 
         <div
           onClick={() => handleLogout()}
-          className="cursor-pointer  group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:text-black hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
+          className="select-none cursor-pointer  group rounded-lg border border-transparent px-5 py-4 transition-colors  hover:border-gray-300 hover:bg-gray-100 hover:text-black"
         >
           <span className="mr-4 font-bold text-2xl">Cerrar sesion</span>
           <IconButton
@@ -191,7 +201,7 @@ function Home() {
             confirm("seguro que quiere borrar su usuario?") &&
             handleDeleteUser()
           }
-          className="cursor-pointer  group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:text-black hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
+          className="select-none cursor-pointer  group rounded-lg border border-transparent px-5 py-4 transition-colors  hover:border-gray-300 hover:bg-gray-100 hover:text-black"
         >
           <span className="mr-4 font-bold text-2xl">Borrar usuario</span>
           <IconButton
@@ -264,21 +274,61 @@ function Home() {
         <p className="absolute -top-8">Funciones:</p>
         <div
           onClick={async () => {
-            const user = await retrieveUserCustomData();
-            await swTestNewSuscription(user?.notifications?.suscription);
+            if (loading === "swTestNewSuscription") {
+              return;
+            }
+
+            try {
+              setLoading("swTestNewSuscription");
+              const user = await retrieveUserCustomData();
+              await swTestNewSuscription(user?.notifications?.suscription);
+            } catch (error) {
+              throw error;
+            } finally {
+              setLoading(false);
+            }
           }}
-          className="select-none cursor-pointer  group rounded-lg border border-transparent px-5 py-4 transition-colors active:text-white hover:border-gray-300 hover:bg-gray-100 hover:text-black hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
+          className="select-none cursor-pointer  group rounded-lg border border-transparent px-5 py-4 transition-colors  hover:border-gray-300 hover:bg-gray-100 hover:text-black"
         >
           <span className="mr-4 font-bold text-2xl">Probar Notificacion</span>
-          <IconButton
-            disableRipple
-            sx={{ backgroundColor: "black" }}
-            size="large"
-          >
-            <Logout sx={{ color: "white" }} fontSize="inherit" />
-          </IconButton>
+          {loading === "swTestNewSuscription" ? (
+            <CircularProgress color="info" />
+          ) : (
+            <IconButton
+              disableRipple
+              sx={{ backgroundColor: "black" }}
+              size="large"
+            >
+              <AdsClick sx={{ color: "white" }} fontSize="inherit" />
+            </IconButton>
+          )}
+        </div>
+        {/* handleNotificationsFlow */}
+        <div
+          onClick={async () => {
+            if (loading !== "handleNotificationsFlow") {
+              await handleNotificationsFlow();
+            }
+          }}
+          className="select-none cursor-pointer  group rounded-lg border border-transparent px-5 py-4 transition-colors  hover:border-gray-300 hover:bg-gray-100 hover:text-black"
+        >
+          <span className="mr-4 font-bold text-2xl">
+            Recordar en este dispositivo
+          </span>
+          {loading === "handleNotificationsFlow" ? (
+            <CircularProgress color="info" />
+          ) : (
+            <IconButton
+              disableRipple
+              sx={{ backgroundColor: "black" }}
+              size="large"
+            >
+              <AdsClick sx={{ color: "white" }} fontSize="inherit" />
+            </IconButton>
+          )}
         </div>
       </div>
+
       {openCreateMeetModal && (
         <CreateMeetModal
           onClose={() => setOpenCreateMeetModal(false)}

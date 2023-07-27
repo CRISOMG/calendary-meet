@@ -14,8 +14,9 @@ import { Provider } from "react-redux";
 
 export default function App({ Component, pageProps }): JSX.Element {
   useEffect(() => {
+    console.log("try install service worker");
     if ("serviceWorker" in navigator) {
-      window.addEventListener("load", async function () {
+      (async () => {
         try {
           const sw = await navigator.serviceWorker.register("/sw.js");
           console.log(
@@ -26,7 +27,9 @@ export default function App({ Component, pageProps }): JSX.Element {
         } catch (error) {
           console.log("Service Worker registration failed: ", error);
         }
-      });
+      })();
+    } else {
+      console.log("Service Worker no disponible");
     }
   }, []);
 

@@ -2,7 +2,7 @@ import * as Realm from "realm-web";
 
 export const swRequestNotificationsGrant = async () => {
   const result = await Notification.requestPermission((result) => result);
-
+  console.log("swRequestNotificationsGrant:", result);
   return {
     result,
     isGranted: result === "granted",
@@ -59,35 +59,43 @@ export const swUpdateSuscription = async (suscription) => {
     const updated = (res.matchedCount && res.modifiedCount) || null;
     return { updated };
   } catch (error) {
-    console.error(error);
+    console.error("swUpdateSuscription:", error);
+    throw error;
   }
 };
 
 export const swHandleSuscription = async (sw) => {
-  const { result, isGranted, isDefault, isDenied } =
-    await swRequestNotificationsGrant();
+  try {
+    const { result, isGranted, isDefault, isDenied } =
+      await swRequestNotificationsGrant();
 
-  if (isGranted) {
-    const suscription = await sw.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: process.env.NEXT_PUBLIC_VAPID_KEY,
-    });
+    if (!isDenied) {
+      const suscription = await sw.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: process.env.NEXT_PUBLIC_VAPID_KEY,
+      });
 
-    return suscription;
+      return suscription;
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
   }
 };
 
 export const onServiceWorker = async (callback) => {
   try {
-    const sw = await navigator.serviceWorker.ready;
-    if (typeof callback === "function") {
-      callback(sw);
-    }
+    return await navigator.serviceWorker.ready.then((sw) => {
+      if (typeof callback === "function") {
+        callback(sw);
+      }
 
-    if (!callback) {
-      return sw;
-    }
+      if (!callback) {
+        return sw;
+      }
+    });
   } catch (error) {
-    console.error(error);
+    console.error("onServiceWorker:", error);
+    throw error;
   }
 };

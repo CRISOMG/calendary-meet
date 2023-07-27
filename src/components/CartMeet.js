@@ -1,40 +1,7 @@
-import Image from "next/image";
-import { Inter, Trykker } from "next/font/google";
-import * as Realm from "realm-web";
+import { Inter } from "next/font/google";
+import { IconButton } from "@mui/material";
+import { Delete, Edit } from "@mui/icons-material";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { endpoints } from "@/urls";
-import dynamic from "next/dynamic";
-import {
-  onServiceWorker,
-  swHandleSuscription,
-  swTestNewSuscription,
-  swUpdateSuscription,
-} from "@/service-worker-handlers";
-import {
-  Button,
-  CircularProgress,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  Grid,
-  IconButton,
-  InputLabel,
-  TextField,
-} from "@mui/material";
-import {
-  Add,
-  Close,
-  Delete,
-  Edit,
-  Label,
-  Logout,
-  PlusOne,
-} from "@mui/icons-material";
-
-import { useFormik } from "formik";
-import * as yup from "yup";
 const inter = Inter({ subsets: ["latin"] });
 
 export const CardMeet = (params) => {
