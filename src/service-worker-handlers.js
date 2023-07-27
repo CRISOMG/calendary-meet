@@ -51,10 +51,10 @@ export const swUpdateSuscription = async (suscription) => {
     const app = new Realm.App({ id: "devicesync-avzpr" });
 
     const res = await app.currentUser
-      .mongoClient("mongodb-atlas")
-      .db("calendary")
-      .collection("users")
-      .updateOne(
+      ?.mongoClient("mongodb-atlas")
+      ?.db("calendary")
+      ?.collection("users")
+      ?.updateOne(
         {
           user_id: Realm.BSON.ObjectId(app.currentUser.id),
         },
@@ -67,7 +67,7 @@ export const swUpdateSuscription = async (suscription) => {
         }
       );
 
-    const updated = res.matchedCount && res.modifiedCount;
+    const updated = (res.matchedCount && res.modifiedCount) || null;
     return { updated };
   } catch (error) {
     console.error(error);

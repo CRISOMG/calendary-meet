@@ -15,24 +15,10 @@ import { useSnackbar } from "notistack";
 const inter = Inter({ subsets: ["latin"] });
 
 function Registro() {
-  const app = new Realm.App({ id: "devicesync-avzpr" });
   const { enqueueSnackbar } = useSnackbar();
+  const { register } = useRealmServices();
 
   const router = useRouter();
-
-  const register = async ({ email, password }) => {
-    try {
-      const res = await app.emailPasswordAuth.registerUser({
-        email,
-        password,
-      });
-
-      console.log(res);
-      return res;
-    } catch (error) {
-      throw error;
-    }
-  };
 
   const [loading, setLoading] = useState(false);
   const { errors, values, handleChange, handleSubmit, handleBlur } = useFormik({
@@ -62,7 +48,7 @@ function Registro() {
   });
 
   return (
-    <main className={`min-h-screen p-24 ${inter.className}`}>
+    <main className={`min-h-screen md:p-24 ${inter.className}`}>
       <div className="mb-12 mx-auto w-min">
         <h1 className="calendary-logo">
           Calendary
@@ -114,7 +100,7 @@ function Registro() {
           >
             {loading ? (
               <CircularProgress
-                sx={{ color: "white", "&:hover": { color: "black" } }}
+                sx={{ color: "black", "&:hover": { color: "black" } }}
                 size={35}
               />
             ) : (

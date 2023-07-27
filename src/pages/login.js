@@ -18,42 +18,33 @@ const inter = Inter({ subsets: ["latin"] });
 function Login() {
   const app = new Realm.App({ id: "devicesync-avzpr" });
   const { enqueueSnackbar } = useSnackbar();
-
+  const { retryConfirmation, login, confirmUser } = useRealmServices();
   const router = useRouter();
+
+  const handleConfirmationUser = async ({ token, tokenId }) => {
+    try {
+      const data = await confirmUser({
+        token,
+        tokenId,
+      });
+      enqueueSnackbar("ususario confirmado con exito, puede iniciar sesion.", {
+        variant: "success",
+      });
+      return data;
+    } catch (error) {
+      enqueueSnackbar(error.message, { variant: "error" });
+    }
+  };
 
   useEffect(() => {
     const { token, tokenId } = router.query;
     if (token && tokenId) {
-      (async () => {
-        // console.log({ token, tokenId });
-        try {
-          debugger;
-          await app.emailPasswordAuth.confirmUser({ token, tokenId });
-          enqueueSnackbar(
-            "ususario confirmado con exito, puede iniciar sesion.",
-            { variant: "success" }
-          );
-        } catch (error) {
-          enqueueSnackbar(error.message, { variant: "error" });
-
-          console.error(error);
-        }
-      })();
+      handleConfirmationUser({ token, tokenId });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.query]);
 
   const { dispatchSetUser } = useAuthActions();
-
-  const login = async ({ email, password }) => {
-    try {
-      const credentials = Realm.Credentials.emailPassword(email, password);
-      const user = await app.logIn(credentials);
-      return user;
-    } catch (error) {
-      throw error;
-    }
-  };
 
   const [loading, setLoading] = useState(false);
   const { errors, values, handleChange, handleSubmit, handleBlur } = useFormik({
@@ -70,7 +61,7 @@ function Login() {
         const { email, password } = values;
         setLoading(true);
         const user = await login({ email, password });
-        dispatchSetUser(user);
+        dispatchSetUser(user.toJSON());
 
         router.push("/");
       } catch (error) {
@@ -82,7 +73,7 @@ function Login() {
   });
 
   return (
-    <main className={`min-h-screen p-24 ${inter.className}`}>
+    <main className={`min-h-screen md:p-24 ${inter.className}`}>
       <div className="mb-12 mx-auto w-min">
         <h1 className="calendary-logo">
           Calendary
@@ -134,7 +125,7 @@ function Login() {
           >
             {loading ? (
               <CircularProgress
-                sx={{ color: "white", "&:hover": { color: "black" } }}
+                sx={{ color: "black", "&:hover": { color: "black" } }}
                 size={35}
               />
             ) : (
