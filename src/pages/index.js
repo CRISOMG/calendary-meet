@@ -40,6 +40,11 @@ import { CardMeet } from "../components/CartMeet";
 import { CreateMeetModal } from "../components/CreateMeetModal";
 import { UpdateMeetModal } from "../components/UpdateMeetModal";
 
+import { useSnackbar } from "notistack";
+import { useSelectorAuth } from "@/redux/slices/auth";
+
+import { useRealmServices } from "../hooks/useRealm";
+
 const inter = Inter({ subsets: ["latin"] });
 
 function Home() {
@@ -145,6 +150,14 @@ function Home() {
       enqueueSnackbar(error.message, { variant: "error" });
     }
   };
+  const handleDeleteUser = async () => {
+    try {
+      await deleteUser();
+      router.push("/login");
+    } catch (error) {
+      enqueueSnackbar(error.message, { variant: "error" });
+    }
+  };
 
   // swTestNewSuscription
   return (
@@ -171,6 +184,22 @@ function Home() {
             size="large"
           >
             <Logout sx={{ color: "white" }} fontSize="inherit" />
+          </IconButton>
+        </div>
+        <div
+          onClick={() =>
+            confirm("seguro que quiere borrar su usuario?") &&
+            handleDeleteUser()
+          }
+          className="cursor-pointer  group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:text-black hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
+        >
+          <span className="mr-4 font-bold text-2xl">Borrar usuario</span>
+          <IconButton
+            disableRipple
+            sx={{ backgroundColor: "black" }}
+            size="large"
+          >
+            <Delete sx={{ color: "white" }} fontSize="inherit" />
           </IconButton>
         </div>
       </div>

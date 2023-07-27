@@ -2,7 +2,10 @@ import { useEffect } from "react";
 import "../styles/globals.css";
 
 import * as Realm from "realm-web";
-import { swHandleSuscription } from "../service-worker-handlers";
+import {
+  swHandleSuscription,
+  swRequestNotificationsGrant,
+} from "../service-worker-handlers";
 
 import { SnackbarProvider } from "notistack";
 
@@ -19,6 +22,7 @@ export default function App({ Component, pageProps }): JSX.Element {
             "Service Worker registration successful with scope: ",
             sw.scope
           );
+          await swRequestNotificationsGrant();
         } catch (error) {
           console.log("Service Worker registration failed: ", error);
         }

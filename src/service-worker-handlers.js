@@ -11,17 +11,6 @@ export const swRequestNotificationsGrant = async () => {
   };
 };
 
-export const suscriptionExample = {
-  endpoint:
-    "https://fcm.googleapis.com/fcm/send/fVOQIiPG2nY:APA91bHDB1bZjh26kUZ3nquESQ3Lq7lFtTMobyNlWtsCtkLiwJfsX_JoTcOHyICd4ybIOW87TP0idBBnbZ30C-qtdRirAZwamYSB0uumJ3z6Y4samW3KFpqHrTOrtATnD116u5sLrgWx",
-  expirationTime: null,
-  keys: {
-    p256dh:
-      "BDqv68rc2HoGrUb0E6Cohk2aOCt-AgQ-ukNtAivknGt9PTaeYSA_KaDlXz3bdUR6Iwx3zfZ0qAEG12shz6nQ5xw",
-    auth: "3iTWwiCZ_5g8vnC-HXFZRA",
-  },
-};
-
 export const swTestNewSuscription = async (suscription, type) => {
   try {
     const app = new Realm.App({ id: "devicesync-avzpr" });
