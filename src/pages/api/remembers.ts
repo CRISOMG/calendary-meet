@@ -1,8 +1,9 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
-const webpush = require("web-push");
+import { NextApiRequest, NextApiResponse } from 'next';
+import webpush from 'web-push';
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     const suscritions = req.body;
 

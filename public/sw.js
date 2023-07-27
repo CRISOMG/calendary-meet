@@ -17,27 +17,27 @@ function initializePushNotifications() {
 /**
  * shows a notification
  */
-function sendNotification() {
-  const title = "Calendary Meet";
-  const options = {
-    body: "Tienes un nuevo Meet programado!",
-    icon: "/calendary-icon.png",
-    vibrate: [200, 100, 200],
-    tag: "new-meet",
-    image: "/calendar-icon.png",
-    badge: "https://localhost:3000/calendar-icon",
-    actions: [
-      {
-        action: "Detail",
-        title: "Ver",
-        icon: "https://localhost:3000/",
-      },
-    ],
-  };
-  navigator.serviceWorker.ready.then(function (serviceWorker) {
-    serviceWorker.showNotification(title, options);
-  });
-}
+// function sendNotification() {
+//   const title = "Calendary Meet";
+//   const options = {
+//     body: "Tienes un nuevo Meet programado!",
+//     icon: "/calendary-icon.png",
+//     vibrate: [200, 100, 200],
+//     tag: "new-meet",
+//     image: "/calendar-icon.png",
+//     badge: "https://localhost:3000/calendar-icon",
+//     actions: [
+//       {
+//         action: "Detail",
+//         title: "Ver",
+//         icon: "https://localhost:3000/",
+//       },
+//     ],
+//   };
+//   navigator.serviceWorker.ready.then(function (serviceWorker) {
+//     serviceWorker.showNotification(title, options);
+//   });
+// }
 
 /**
  *
@@ -48,41 +48,63 @@ function registerServiceWorker() {
   });
 }
 
-const pushNotificationSuported = isPushNotificationSupported();
+// const pushNotificationSuported = isPushNotificationSupported();
 
-if (pushNotificationSuported) {
-  registerServiceWorker();
-  initializePushNotifications().then(function (consent) {
-    if (consent === "granted") {
-      sendNotification();
-    }
-  });
-}
+// if (pushNotificationSuported) {
+//   registerServiceWorker();
+//   initializePushNotifications().then(function (consent) {
+//     if (consent === "granted") {
+//       sendNotification();
+//     }
+//   });
+// }
 
 function receivePushNotification(event) {
-  console.log("[Service Worker] Push Received.");
-
-  //const { image, tag, url, title, text } = event.data.json();
-  const notificationText = event.data.text();
+  const { type } = event.data.json();
+  console.log("[Service Worker] Push Received. type: ", type);
+  // const notificationText = event.data.text();
   //call the method showNotification to show the notification
+
   const calendarIconUrl = "http://localhost:3000/calendar-icon.png";
-  event.waitUntil(
-    self.registration.showNotification("Calendary Meet", {
-      body: "Tienes un nuevo Meet programado!",
-      icon: calendarIconUrl,
-      vibrate: [200, 100, 200],
-      tag: "new-meet",
-      image: calendarIconUrl,
-      badge: calendarIconUrl,
-      actions: [
-        {
-          action: "Detail",
-          title: "Ver",
-          icon: calendarIconUrl,
-        },
-      ],
-    })
-  );
+  if (type === "remember") {
+    event.waitUntil(
+      self.registration.showNotification("Calendary Meet Remember", {
+        body: "Recuerda que tienes un cita programada.",
+        icon: calendarIconUrl,
+        vibrate: [200, 100, 200],
+        tag: "remember",
+        image: calendarIconUrl,
+        badge: calendarIconUrl,
+        // actions: [
+        //   {
+        //     action: "Detail",
+        //     title: "Ver",
+        //     icon: calendarIconUrl,
+        //   },
+        // ],
+      })
+    );
+  }
+
+  if (type === "new-suscription") {
+    event.waitUntil(
+      self.registration.showNotification("Calendary Meet Notifications", {
+        body: "Notificaciones Activas.",
+        icon: calendarIconUrl,
+        vibrate: [200, 100, 200],
+        tag: "active-notifications",
+        image: calendarIconUrl,
+        badge: calendarIconUrl,
+        // actions: [
+        //   {
+        //     action: "Detail",
+        //     title: "Ver",
+        //     icon: calendarIconUrl,
+        //   },
+        // ],
+      })
+    );
+  }
 }
 self.addEventListener("push", receivePushNotification);
 
@@ -93,11 +115,11 @@ function openPushNotification(event) {
   );
 
   event.notification.close();
-  event.waitUntil(clients.openWindow(event.notification.data));
+  event.waitUntil(clients.openWindow());
 }
 
 self.addEventListener("notificationclick", openPushNotification);
 
 self.addEventListener("install", function (event) {
-  console.log("Hello world from the Service Worker 🤙");
+  console.log("[Service Worker] installed 🤙");
 });

@@ -1,8 +1,9 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
 const webpush = require("web-push");
+import { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     const { suscription } = req.body;
 
@@ -12,7 +13,6 @@ export default async function handler(req, res) {
         type: "new-suscription",
       }),
       {
-        contentEncoding: "aesgcm",
         vapidDetails: {
           subject: "mailto:caraballodev@gmail.com",
           publicKey: process.env.NEXT_PUBLIC_VAPID_KEY,

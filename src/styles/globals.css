@@ -34,3 +34,18 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+.calendary-logo {
+  @apply relative font-extrabold text-transparent text-6xl sm:text-9xl leading-relaxed bg-clip-text bg-gradient-to-bl from-blue-800 from-20% via-blue-500 via-50% to-blue-800 to-90% font-grand-hotel;
+}
+
+.calendary-sub-logo {
+  @apply absolute text-amber-600 text-[1.5rem] sm:text-[3rem] -bottom-2 sm:-bottom-8 right-7 sm:right-14;
+}
+
+.card {
+  @apply text-black  rounded-lg border border-transparent px-5 py-4 transition-colors border-gray-300 bg-gray-100;
+}
+/* .cart-button {
+  @apply cursor-pointer hover:text-black group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30;
+} */

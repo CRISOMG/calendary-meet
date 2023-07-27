@@ -29,7 +29,7 @@ export const swTestNewSuscription = async (suscription, type) => {
     const res =
       type !== "local"
         ? await app.currentUser.callFunction("new_suscription", suscription)
-        : await fetch("/api/new-suscription", {
+        : await fetch("/api/test-suscription", {
             method: "post",
             headers: {
               "Content-Type": "application/json",
@@ -88,9 +88,14 @@ export const swHandleSuscription = async (sw) => {
 
 export const onServiceWorker = async (callback) => {
   try {
-    navigator.serviceWorker.ready.then(function (sw) {
+    const sw = await navigator.serviceWorker.ready;
+    if (typeof callback === "function") {
       callback(sw);
-    });
+    }
+
+    if (!callback) {
+      return sw;
+    }
   } catch (error) {
     console.error(error);
   }

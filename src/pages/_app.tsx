@@ -1,10 +1,15 @@
 import { useEffect } from "react";
-import "@/styles/globals.css";
+import "../styles/globals.css";
 
 import * as Realm from "realm-web";
-import { swHandleSuscription } from "@/service-worker-handlers";
+import { swHandleSuscription } from "../service-worker-handlers";
 
-export default function App({ Component, pageProps }) {
+import { SnackbarProvider } from "notistack";
+
+import { store } from "../redux/store";
+import { Provider } from "react-redux";
+
+export default function App({ Component, pageProps }): JSX.Element {
   useEffect(() => {
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", async function () {
@@ -21,5 +26,13 @@ export default function App({ Component, pageProps }) {
     }
   }, []);
 
-  return <Component {...pageProps} />;
+  return (
+    <>
+      <Provider store={store}>
+        <SnackbarProvider maxSnack={3}>
+          <Component {...pageProps} />
+        </SnackbarProvider>
+      </Provider>
+    </>
+  );
 }
