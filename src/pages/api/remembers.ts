@@ -1,9 +1,12 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
-import { NextApiRequest, NextApiResponse } from 'next';
-import webpush from 'web-push';
+import { NextApiRequest, NextApiResponse } from "next";
+import webpush from "web-push";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   try {
     const suscritions = req.body;
 
@@ -13,6 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           suscription,
           JSON.stringify({
             type: "remember",
+            // meet: meet.title // TODO: mandar detalles del meet en la notificacion
           }),
           {
             vapidDetails: {

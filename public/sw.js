@@ -105,6 +105,25 @@ function receivePushNotification(event) {
       })
     );
   }
+  if (type === "test-suscription") {
+    event.waitUntil(
+      self.registration.showNotification("Calendary Meet Notifications", {
+        body: "Notificaciones Activas.",
+        icon: calendarIconUrl,
+        vibrate: [200, 100, 200],
+        tag: "active-notifications",
+        image: calendarIconUrl,
+        badge: calendarIconUrl,
+        // actions: [
+        //   {
+        //     action: "Detail",
+        //     title: "Ver",
+        //     icon: calendarIconUrl,
+        //   },
+        // ],
+      })
+    );
+  }
 }
 self.addEventListener("push", receivePushNotification);
 

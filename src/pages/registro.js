@@ -8,14 +8,15 @@ import dynamic from "next/dynamic";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { useAuthActions } from "../redux/slices/auth";
 import { CircularProgress } from "@mui/material";
 import Link from "next/link";
+import { useSnackbar } from "notistack";
 
 const inter = Inter({ subsets: ["latin"] });
 
 function Registro() {
   const app = new Realm.App({ id: "devicesync-avzpr" });
+  const { enqueueSnackbar } = useSnackbar();
 
   const router = useRouter();
 
@@ -29,7 +30,7 @@ function Registro() {
       console.log(res);
       return res;
     } catch (error) {
-      console.error(error);
+      throw error;
     }
   };
 
@@ -48,10 +49,12 @@ function Registro() {
         const { email, password } = values;
         setLoading(true);
         const user = await register({ email, password });
-        alert("se te envio un correo con el link de confirmacion.");
+        enqueueSnackbar("se te envio un correo con el link de confirmacion.", {
+          variant: "success",
+        });
         router.push("login");
       } catch (error) {
-        alert("Ha ocurrido un error", error.message);
+        enqueueSnackbar(error.message, { variant: "error" });
       } finally {
         setLoading(false);
       }

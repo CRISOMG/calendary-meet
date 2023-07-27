@@ -26,18 +26,20 @@ export const swTestNewSuscription = async (suscription, type) => {
   try {
     const app = new Realm.App({ id: "devicesync-avzpr" });
 
-    const res =
-      type !== "local"
-        ? await app.currentUser.callFunction("new_suscription", suscription)
-        : await fetch("/api/test-suscription", {
-            method: "post",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              suscription,
-            }),
-          });
+    // const res =
+    // type !== "local"
+    //   ? await app.currentUser.callFunction("new_suscription", suscription)
+    //   :
+
+    const res = await fetch("/api/test-suscription", {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        suscription,
+      }),
+    });
     console.log(res);
   } catch (error) {
     console.error(error);

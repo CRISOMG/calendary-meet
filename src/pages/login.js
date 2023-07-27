@@ -27,6 +27,7 @@ function Login() {
       (async () => {
         // console.log({ token, tokenId });
         try {
+          debugger;
           await app.emailPasswordAuth.confirmUser({ token, tokenId });
           enqueueSnackbar(
             "ususario confirmado con exito, puede iniciar sesion.",
@@ -50,7 +51,7 @@ function Login() {
       const user = await app.logIn(credentials);
       return user;
     } catch (error) {
-      console.error(error);
+      throw error;
     }
   };
 
@@ -73,7 +74,7 @@ function Login() {
 
         router.push("/");
       } catch (error) {
-        alert("Ha ocurrido un error", error.message);
+        enqueueSnackbar(error.message, { variant: "error" });
       } finally {
         setLoading(false);
       }

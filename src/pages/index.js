@@ -57,7 +57,7 @@ function Home() {
       router.push("/login");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [app.currentUser]);
+  }, []);
 
   const handleNotificationsFlow = async () => {
     try {
@@ -91,44 +91,28 @@ function Home() {
       console.error(error);
     }
   };
-  useEffect(() => {
-    (async () => {
-      try {
-        const user = await retrieveUserCustomData();
-        if (!user?.notifications?.suscription) {
-          await handleNotificationsFlow();
-        }
-      } catch (error) {
-        console.log(error);
+
+  const handleActiveNotifications = async () => {
+    try {
+      const user = await retrieveUserCustomData();
+      if (!user?.notifications?.suscription) {
+        await handleNotificationsFlow();
+      } else {
+        enqueueSnackbar("notificationes estan activas.", {
+          variant: "info",
+        });
       }
-    })();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    handleActiveNotifications();
   }, []);
 
   if (globalThis?.window) {
     window._app = app;
   }
-  const register = async () => {
-    try {
-      const res = await app.emailPasswordAuth.registerUser(_user);
-
-      console.log(res);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const login = async ({ email, password }) => {
-    try {
-      const credentials = Realm.Credentials.emailPassword(email, password);
-
-      const user = await app.logIn(credentials);
-
-      setUser(user);
-      console.log(user);
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   const deleteUser = async () => {
     try {
@@ -380,7 +364,7 @@ function Home() {
       </>
     );
   };
-
+  // swTestNewSuscription
   return (
     <main className={`min-h-screen p-24 ${inter.className}`}>
       <div className="mb-12 mx-auto w-min">
@@ -394,11 +378,11 @@ function Home() {
           Usuario: {app?.currentUser?.profile?.email}
         </p>
 
-        <button
+        <div
           onClick={() => handleLogout()}
           className="cursor-pointer  group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:text-black hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
         >
-          <span className="mr-4 font-bold text-2xl">Logout</span>
+          <span className="mr-4 font-bold text-2xl">Cerrar sesion</span>
           <IconButton
             disableRipple
             sx={{ backgroundColor: "black" }}
@@ -406,7 +390,7 @@ function Home() {
           >
             <Logout sx={{ color: "white" }} fontSize="inherit" />
           </IconButton>
-        </button>
+        </div>
       </div>
 
       <div className="relative mx-auto border border-white rounded p-4 min-h-[8rem] max-w-5xl flex flex-wrap mt-24">
@@ -445,6 +429,23 @@ function Home() {
       </div>
       <div className="relative mx-auto border border-white rounded p-4 min-h-[8rem] max-w-5xl flex flex-wrap mt-24">
         <p className="absolute -top-8">Funciones:</p>
+        <div
+          onClick={async () => {
+            const user = await retrieveUserCustomData();
+            debugger;
+            await swTestNewSuscription(user?.notifications?.suscription);
+          }}
+          className="cursor-pointer  group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:text-black hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
+        >
+          <span className="mr-4 font-bold text-2xl">Probar Notificacion</span>
+          <IconButton
+            disableRipple
+            sx={{ backgroundColor: "black" }}
+            size="large"
+          >
+            <Logout sx={{ color: "white" }} fontSize="inherit" />
+          </IconButton>
+        </div>
       </div>
       {openCreateMeetModal && (
         <CreateMeetModal
@@ -584,7 +585,7 @@ const CreateMeetModal = ({ onClose, open, onSubmit }) => {
               />
             </Grid>
             <Grid item my={2}>
-              <InputLabel htmlFor="description">Descricion</InputLabel>
+              <InputLabel htmlFor="description">Descripcion</InputLabel>
               <TextField
                 error={Boolean(errors?.description)}
                 helperText={errors?.description ? errors?.description : " "}
@@ -724,7 +725,7 @@ const UpdateMeetModal = ({ onClose, open, onSubmit }) => {
               />
             </Grid>
             <Grid item my={2}>
-              <InputLabel htmlFor="description">Descricion</InputLabel>
+              <InputLabel htmlFor="description">Descripcion</InputLabel>
               <TextField
                 error={Boolean(errors?.description)}
                 helperText={errors?.description ? errors?.description : " "}
