@@ -140,5 +140,6 @@ function openPushNotification(event) {
 self.addEventListener("notificationclick", openPushNotification);
 
 self.addEventListener("install", function (event) {
+  initializePushNotifications();
   console.log("[Service Worker] installed 🤙");
 });
